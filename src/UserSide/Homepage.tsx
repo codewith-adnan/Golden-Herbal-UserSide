@@ -1,7 +1,7 @@
 import { ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import backgroundImage from '../assets/background-hero.png';
-import ProductCards from '../Components/ProductCards';
+import ProductCards from './ProductCards';
 
 const Homepage = () => {
     const scrollToProducts = () => {
@@ -30,6 +30,7 @@ const Homepage = () => {
 
                 <div className="max-w-7xl mx-auto px-6 relative z-10">
                     <div className="text-center">
+                        {/* Background Textures (Image ki tarah misty/sparkly feel dene ke liye) */}
 
                         <motion.h1
                             initial={{ opacity: 0, y: 60 }}

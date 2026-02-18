@@ -44,7 +44,7 @@ const BuyNow = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] pt-20 pb-20 font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-hidden">
+        <div className="min-h-screen bg-[#050505]  md:pt-20 pb-20 font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-hidden">
 
             <div className="max-w-6xl mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -80,7 +80,7 @@ const BuyNow = () => {
 
                     {/* --- RIGHT SIDE: PRO CHECKOUT FORM (7 Cols) --- */}
                     <div className="lg:col-span-7">
-                        <div className="bg-[#0a0a0a]/80 backdrop-blur-xl border border-white/5 rounded-3xl p-8 shadow-[0_0_50px_-10px_rgba(0,0,0,0.7)] relative overflow-hidden">
+                        <div className="bg-[#0a0a0a]/80 backdrop-blur-xl border border-white/5 rounded-3xl p-4 md:py-8 shadow-[0_0_50px_-10px_rgba(0,0,0,0.7)] relative overflow-hidden">
 
                             {/* Header Section */}
                             <div className="flex justify-between items-end mb-8 border-b border-white/5 pb-6">

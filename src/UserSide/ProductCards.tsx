@@ -112,7 +112,7 @@ const ProductCards = () => {
                                 <Link
                                     to="/buy-now"
                                     state={{ product }}
-                                    className="relative w-full overflow-hidden mt-6 py-4 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 hover:scale-[1.02] shadow-[0_15px_30px_-10px_rgba(212,175,55,0.4)] group/btn active:scale-95"
+                                    className="relative w-full overflow-hidden mt-6 py-4 md:py-4 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 hover:scale-[1.02] shadow-[0_15px_30px_-10px_rgba(212,175,55,0.4)] group/btn active:scale-95"
                                 >
                                     <ShoppingBag size={16} />
                                     <span>Buy Now</span>
