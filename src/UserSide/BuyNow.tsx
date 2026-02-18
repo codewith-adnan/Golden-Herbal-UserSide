@@ -1,7 +1,8 @@
-import { ShoppingBag, Star, Sparkles, Plus, Minus } from 'lucide-react';
+import { ShoppingBag, Star, Sparkles, Plus, Minus, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useOrder } from './UseHooks';
 import card1 from '../assets/card1.PNG';
 
 const BuyNow = () => {
@@ -20,27 +21,32 @@ const BuyNow = () => {
     const [quantity, setQuantity] = useState(1);
     const totalPrice = product.price * quantity;
 
+    const { placeOrder, loading, error, success } = useOrder();
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             customer_name: '',
+            email: '',
             phone: '',
             address: '',
             city: ''
         }
     });
 
-    const onSubmit = (data: { customer_name: string; phone: string; address: string; city: string }) => {
-        const orderData = {
-            ...data,
-            items: [
-                {
-                    product_id: product.id,
-                    quantity: quantity
-                }
-            ]
-        };
-        console.log("Order Submitted:", orderData);
-        alert("Order placed successfully! Check console for data.");
+    const onSubmit = async (data: { customer_name: string; email: string; phone: string; address: string; city: string }) => {
+        try {
+            await placeOrder({
+                ...data,
+                items: [
+                    {
+                        product_id: product.id,
+                        quantity: quantity
+                    }
+                ]
+            });
+        } catch (err) {
+            console.error("Order Submission Detail:", err);
+        }
     };
 
     return (
@@ -102,6 +108,21 @@ const BuyNow = () => {
                                 </div>
                             </div>
 
+                            {/* Success & Error Messages */}
+                            {success && (
+                                <div className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center gap-3 text-green-400">
+                                    <CheckCircle size={18} />
+                                    <span className="text-sm">Order placed successfully! ID: <span className="font-bold">#{success.order_id}</span></span>
+                                </div>
+                            )}
+
+                            {error && (
+                                <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400">
+                                    <AlertCircle size={18} />
+                                    <span className="text-sm">{error}</span>
+                                </div>
+                            )}
+
                             {/* Form Area */}
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -115,6 +136,25 @@ const BuyNow = () => {
                                         {errors.customer_name && <span className="text-[10px] text-red-500/80 ml-1 mt-1 block">Required</span>}
                                     </div>
                                     <div className="group">
+                                        <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2 ml-1 group-focus-within:text-[#d4af37] transition-colors">Email</label>
+                                        <input
+                                            {...register("email", {
+                                                required: true,
+                                                pattern: {
+                                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                                    message: "Invalid email address"
+                                                }
+                                            })}
+                                            type="email"
+                                            className="w-full bg-[#111] border border-white/5 focus:border-[#d4af37]/50 rounded-xl px-4 h-12 text-[#eee] text-sm placeholder:text-[#444] transition-all outline-none focus:bg-[#161616]"
+                                            placeholder="your@email.com"
+                                        />
+                                        {errors.email && <span className="text-[10px] text-red-500/80 ml-1 mt-1 block">{errors.email.message || "Required"}</span>}
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div className="group">
                                         <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2 ml-1 group-focus-within:text-[#d4af37] transition-colors">Phone</label>
                                         <input
                                             {...register("phone", { required: true })}
@@ -123,16 +163,15 @@ const BuyNow = () => {
                                         />
                                         {errors.phone && <span className="text-[10px] text-red-500/80 ml-1 mt-1 block">Required</span>}
                                     </div>
-                                </div>
-
-                                <div className="group">
-                                    <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2 ml-1 group-focus-within:text-[#d4af37] transition-colors">City</label>
-                                    <input
-                                        {...register("city", { required: true })}
-                                        className="w-full bg-[#111] border border-white/5 focus:border-[#d4af37]/50 rounded-xl px-4 h-12 text-[#eee] text-sm placeholder:text-[#444] transition-all outline-none focus:bg-[#161616]"
-                                        placeholder="e.g. Lahore, Karachi"
-                                    />
-                                    {errors.city && <span className="text-[10px] text-red-500/80 ml-1 mt-1 block">Required</span>}
+                                    <div className="group">
+                                        <label className="block text-[10px] font-bold text-[#666] uppercase tracking-wider mb-2 ml-1 group-focus-within:text-[#d4af37] transition-colors">City</label>
+                                        <input
+                                            {...register("city", { required: true })}
+                                            className="w-full bg-[#111] border border-white/5 focus:border-[#d4af37]/50 rounded-xl px-4 h-12 text-[#eee] text-sm placeholder:text-[#444] transition-all outline-none focus:bg-[#161616]"
+                                            placeholder="e.g. Lahore, Karachi"
+                                        />
+                                        {errors.city && <span className="text-[10px] text-red-500/80 ml-1 mt-1 block">Required</span>}
+                                    </div>
                                 </div>
 
                                 <div className="group">
@@ -164,9 +203,10 @@ const BuyNow = () => {
                                     {/* Submit Button */}
                                     <button
                                         type="submit"
-                                        className="flex-1 bg-[#d4af37] hover:bg-[#c5a028] text-black font-bold text-xs uppercase tracking-[0.2em] h-12 rounded-xl flex items-center justify-center gap-3 transition-all hover:shadow-[0_0_30px_-5px_rgba(212,175,55,0.4)] active:scale-[0.98] w-full"
+                                        disabled={loading}
+                                        className={`flex-1 ${loading ? 'opacity-70 cursor-not-allowed' : 'bg-[#d4af37] hover:bg-[#c5a028]'} text-black font-bold text-xs uppercase tracking-[0.2em] h-12 rounded-xl flex items-center justify-center gap-3 transition-all hover:shadow-[0_0_30px_-5px_rgba(212,175,55,0.4)] active:scale-[0.98] w-full`}
                                     >
-                                        <span>Confirm Order</span>
+                                        <span>{loading ? 'Processing...' : 'Confirm Order'}</span>
                                         <ShoppingBag size={16} />
                                     </button>
                                 </div>
