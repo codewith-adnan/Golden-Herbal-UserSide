@@ -1,7 +1,7 @@
 import { ShoppingBag, Scale, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useProducts } from "./UseHooks";
 
 const ProductList = () => {
