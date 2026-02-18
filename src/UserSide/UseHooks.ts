@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ORDER_APIS, type OrderPayload, type OrderResponse } from "../libs/api/placeorder.api";
+import { PRODUCT_APIS, type Product, type ProductsResponse } from "../libs/api/products.api";
 
 export const useOrder = () => {
     const [loading, setLoading] = useState(false);
@@ -29,4 +30,30 @@ export const useOrder = () => {
         error,
         success,
     };
+};
+
+export const useProducts = (offset = 0, limit = 10) => {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [total, setTotal] = useState(0);
+
+    const fetchProducts = async () => {
+        try {
+            setLoading(true);
+            const data: ProductsResponse = await PRODUCT_APIS.getProducts({ offset, limit });
+            setProducts(data.data);
+            setTotal(data.total);
+        } catch (err: any) {
+            setError(err?.response?.data?.message || "Failed to fetch products");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProducts();
+    }, [offset, limit]);
+
+    return { products, loading, error, total };
 };

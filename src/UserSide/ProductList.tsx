@@ -1,20 +1,17 @@
 import { ShoppingBag, Scale, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import { useProducts } from "./UseHooks";
 
-const ProductCards = () => {
-    const { products, loading, error } = useProducts(0, 3);
+const ProductList = () => {
+    const [page, setPage] = useState(0);
+    const limit = 6;
+    const offset = page * limit;
 
-    if (loading) {
-        return (
-            <div className="bg-[#030405] py-20 flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-        );
-    }
+    const { products, loading, error, total } = useProducts(offset, limit);
 
-    if (products.length === 0) return null;
+    if (!loading && products.length === 0) return null;
 
     return (
         <section className="bg-[#030405] py-20 px-6 font-sans border-t border-[#d4af37]/5">
@@ -24,7 +21,6 @@ const ProductCards = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.3 }}
                     transition={{ duration: 0.6 }}
                     className="flex flex-col items-center text-center mb-16"
                 >
@@ -36,20 +32,20 @@ const ProductCards = () => {
                     </h2>
                 </motion.div>
 
-                {error && <p className="text-red-500 text-center mb-8">{error}</p>}
+                {loading && <p className="text-white text-center">Loading...</p>}
+                {error && <p className="text-red-500 text-center">{error}</p>}
 
-                {/* 3 Column Grid */}
+                {/* Product Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {products.map((product) => (
                         <motion.div
                             key={product.id}
                             initial={{ opacity: 0, y: 50 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.3 }}
                             transition={{ duration: 0.6 }}
                             className="group relative bg-[#0d0f10] border border-[#1a1a1a] border-t-[2.5px] border-t-[#d4af37]/40 rounded-[32px] p-5 transition-all duration-500 hover:bg-white/[0.01] hover:border-[#d4af37]/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] hover:shadow-[0_20px_50px_-12px_rgba(212,175,55,0.08)] overflow-hidden"
                         >
-                            {/* Product Image Area */}
+                            {/* Image */}
                             <div className="relative h-64 w-full rounded-[24px] overflow-hidden mb-6">
                                 <img
                                     src={product.image}
@@ -61,23 +57,30 @@ const ProductCards = () => {
                                 {/* Weight Badge */}
                                 <div className="absolute bottom-4 left-4 bg-[#030405]/80 backdrop-blur-md border border-[#d4af37]/30 px-3 py-1.5 rounded-full flex items-center gap-2">
                                     <Scale size={12} className="text-[#d4af37]" />
-                                    <span className="text-[10px] font-bold text-[#d5dbe6] uppercase tracking-widest">{product.weight}</span>
+                                    <span className="text-[10px] font-bold text-[#d5dbe6] uppercase tracking-widest">
+                                        {product.weight}
+                                    </span>
                                 </div>
                             </div>
 
-                            {/* Content Section */}
+                            {/* Content */}
                             <div className="px-2 space-y-4">
                                 <div className="flex justify-between items-start">
                                     <h3 className="text-2xl font-serif font-bold text-[#d5dbe6] group-hover:text-[#d4af37] transition-colors duration-300">
                                         {product.name}
                                     </h3>
+
                                     {product.stock_quantity > 0 ? (
                                         <div className="flex items-center gap-1 bg-green-500/5 px-2 py-1 rounded-lg">
                                             <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
-                                            <span className="text-[9px] text-green-500/80 font-bold uppercase">In Stock</span>
+                                            <span className="text-[9px] text-green-500/80 font-bold uppercase">
+                                                In Stock
+                                            </span>
                                         </div>
                                     ) : (
-                                        <span className="text-red-500 text-xs font-bold uppercase">Out of Stock</span>
+                                        <span className="text-red-500 text-xs font-bold">
+                                            Out of Stock
+                                        </span>
                                     )}
                                 </div>
 
@@ -85,7 +88,7 @@ const ProductCards = () => {
                                     {product.description}
                                 </p>
 
-                                {/* Price Display */}
+                                {/* Price */}
                                 <div className="flex items-end gap-1 pt-2">
                                     <span className="text-[#d4af37] text-sm font-bold pb-1">Rs.</span>
                                     <span className="text-3xl font-serif font-black text-white tracking-tighter">
@@ -93,26 +96,45 @@ const ProductCards = () => {
                                     </span>
                                 </div>
 
-                                {/* Elite Shiny Buy Now Button */}
+                                {/* Button */}
                                 <Link
                                     to="/buy-now"
                                     state={{ product }}
-                                    className="relative w-full overflow-hidden mt-6 py-4 md:py-4 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 hover:scale-[1.02] shadow-[0_15px_30px_-10px_rgba(212,175,55,0.4)] group/btn active:scale-95"
+                                    className="relative w-full overflow-hidden mt-6 py-4 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 hover:scale-[1.02] shadow-[0_15px_30px_-10px_rgba(212,175,55,0.4)] active:scale-95"
                                 >
                                     <ShoppingBag size={16} />
-                                    <span>Buy Now</span>
-
-                                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-[shinesweep_1.5s_ease-in-out_infinite] pointer-events-none"></div>
+                                    Buy Now
                                 </Link>
                             </div>
-
-                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2/3 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                         </motion.div>
                     ))}
+                </div>
+
+                {/* Pagination */}
+                <div className="mt-16 flex justify-center gap-6">
+                    <button
+                        onClick={() => setPage((p) => Math.max(0, p - 1))}
+                        disabled={page === 0}
+                        className="px-6 py-2 border border-[#d4af37] text-[#d4af37] rounded-lg disabled:opacity-30"
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        onClick={() =>
+                            setPage((p) =>
+                                offset + limit < total ? p + 1 : p
+                            )
+                        }
+                        disabled={offset + limit >= total}
+                        className="px-6 py-2 bg-[#d4af37] text-black rounded-lg disabled:opacity-30"
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
         </section>
     );
 };
 
-export default ProductCards;
+export default ProductList;
