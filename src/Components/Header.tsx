@@ -1,11 +1,25 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Leaf, Menu, X, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
 
+    const handleBuyNowClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsOpen(false);
 
+        if (location.pathname === '/') {
+            const productsSection = document.getElementById('products-section');
+            if (productsSection) {
+                productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        } else {
+            navigate('/', { state: { scrollToProducts: true } });
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-[#d4af37]/20 shadow-2xl">
@@ -35,13 +49,13 @@ const Header = () => {
 
 
                         {/* Premium Buy Now Button */}
-                        <Link
-                            to="/buy-now"
-                            className="px-8 py-3 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] flex items-center space-x-2"
+                        <button
+                            onClick={handleBuyNowClick}
+                            className="px-8 py-3 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black rounded-full font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] flex items-center space-x-2 cursor-pointer"
                         >
                             <ShoppingBag className="h-4 w-4" />
                             <span>Buy Now</span>
-                        </Link>
+                        </button>
                     </div>
 
                     {/* Mobile menu button */}
@@ -63,13 +77,12 @@ const Header = () => {
             >
                 <div className="flex flex-col space-y-6 px-6 items-center">
 
-                    <Link
-                        to="/buy-now"
-                        onClick={() => setIsOpen(false)}
-                        className="w-full max-w-[280px] bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black py-4 rounded-full font-bold text-center uppercase tracking-widest text-sm shadow-xl"
+                    <button
+                        onClick={handleBuyNowClick}
+                        className="w-full max-w-[280px] bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black py-4 rounded-full font-bold text-center uppercase tracking-widest text-sm shadow-xl cursor-pointer"
                     >
                         Buy Now
-                    </Link>
+                    </button>
                 </div>
             </div>
         </nav>

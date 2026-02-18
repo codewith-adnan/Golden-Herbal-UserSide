@@ -1,11 +1,13 @@
-import { ShoppingBag, Star, Sparkles, Plus, Minus, CheckCircle, AlertCircle } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { ShoppingBag, Star, Sparkles, Plus, Minus, AlertCircle } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOrder } from './UseHooks';
 import card1 from '../assets/card1.PNG';
+import HerbalModal from '../Components/HerbalModal';
 
 const BuyNow = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const { product } = location.state || {
         product: {
@@ -19,9 +21,21 @@ const BuyNow = () => {
     };
 
     const [quantity, setQuantity] = useState(1);
+    const [showModal, setShowModal] = useState(false);
     const totalPrice = product.price * quantity;
 
     const { placeOrder, loading, error, success } = useOrder();
+
+    useEffect(() => {
+        if (success) {
+            setShowModal(true);
+        }
+    }, [success]);
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        navigate('/');
+    };
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -51,6 +65,12 @@ const BuyNow = () => {
 
     return (
         <div className="min-h-screen bg-[#050505]  md:pt-20 pb-20 font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-hidden">
+
+            {/* Modal for Success */}
+            <HerbalModal
+                isOpen={showModal}
+                onClose={handleModalClose}
+            />
 
             <div className="max-w-6xl mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
@@ -109,12 +129,7 @@ const BuyNow = () => {
                             </div>
 
                             {/* Success & Error Messages */}
-                            {success && (
-                                <div className="mb-6 p-4 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center gap-3 text-green-400">
-                                    <CheckCircle size={18} />
-                                    <span className="text-sm">Order placed successfully! ID: <span className="font-bold">#{success.order_id}</span></span>
-                                </div>
-                            )}
+                            {/* Removal of old success alert as requested by integrating modal */}
 
                             {error && (
                                 <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400">

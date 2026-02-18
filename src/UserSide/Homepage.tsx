@@ -2,14 +2,28 @@ import { ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import backgroundImage from '../assets/background-hero.png';
 import ProductCards from './ProductCards';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Homepage = () => {
+    const location = useLocation();
+
     const scrollToProducts = () => {
         const productsSection = document.getElementById('products-section');
         if (productsSection) {
             productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     };
+
+    useEffect(() => {
+        if (location.state?.scrollToProducts) {
+            // Short delay to ensure component is fully mounted and ready
+            const timer = setTimeout(() => {
+                scrollToProducts();
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [location.state]);
 
     return (
         <div className="bg-[#030405] min-h-screen animate-in fade-in duration-1000 overflow-hidden text-[#d5dbe6]">
