@@ -5,11 +5,20 @@ import { useState } from "react";
 import { useProducts } from "./UseHooks";
 
 const ProductList = () => {
-    const [page, setPage] = useState(0);
-    const limit = 6;
-    const offset = page * limit;
+    const [viewAll, setViewAll] = useState(false);
 
-    const { products, loading, error, total } = useProducts(offset, limit);
+    // Fetch all products at once (high limit)
+    const { products, loading, error } = useProducts(0, 100);
+
+    const displayedProducts = viewAll ? products : products.slice(0, 3);
+
+    if (loading) {
+        return (
+            <div className="bg-[#030405] py-20 flex items-center justify-center">
+                <div className="w-8 h-8 border-4 border-[#d4af37] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     if (!loading && products.length === 0) return null;
 
@@ -21,6 +30,7 @@ const ProductList = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                     className="flex flex-col items-center text-center mb-16"
                 >
@@ -32,17 +42,17 @@ const ProductList = () => {
                     </h2>
                 </motion.div>
 
-                {loading && <p className="text-white text-center">Loading...</p>}
-                {error && <p className="text-red-500 text-center">{error}</p>}
+                {error && <p className="text-red-500 text-center mb-8">{error}</p>}
 
                 {/* Product Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {products.map((product) => (
+                    {displayedProducts.map((product) => (
                         <motion.div
                             key={product.id}
                             initial={{ opacity: 0, y: 50 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.5 }}
                             className="group relative bg-[#0d0f10] border border-[#1a1a1a] border-t-[2.5px] border-t-[#d4af37]/40 rounded-[32px] p-5 transition-all duration-500 hover:bg-white/[0.01] hover:border-[#d4af37]/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] hover:shadow-[0_20px_50px_-12px_rgba(212,175,55,0.08)] overflow-hidden"
                         >
                             {/* Image */}
@@ -96,7 +106,7 @@ const ProductList = () => {
                                     </span>
                                 </div>
 
-                                {/* Button */}
+                                {/* Buy Now Button */}
                                 <Link
                                     to="/buy-now"
                                     state={{ product }}
@@ -110,31 +120,22 @@ const ProductList = () => {
                     ))}
                 </div>
 
-                {/* Pagination */}
-                <div className="mt-16 flex justify-center gap-6">
-                    <button
-                        onClick={() => setPage((p) => Math.max(0, p - 1))}
-                        disabled={page === 0}
-                        className="px-6 py-2 border border-[#d4af37] text-[#d4af37] rounded-lg disabled:opacity-30"
-                    >
-                        Previous
-                    </button>
+                {/* View All Toggle */}
+                {products.length > 3 && (
+                    <div className="flex justify-center pt-12">
+                        <button
+                            onClick={() => setViewAll(!viewAll)}
+                            className="px-8 py-3 bg-[#111111] border border-[#d4af37]/20 text-[#d4af37] rounded-xl font-bold text-sm tracking-widest hover:bg-[#d4af37]/10 hover:border-[#d4af37]/50 transition-all transform hover:scale-105"
+                        >
+                            {viewAll ? "SHOW LESS" : "VIEW ALL PRODUCTS"}
+                        </button>
+                    </div>
+                )}
 
-                    <button
-                        onClick={() =>
-                            setPage((p) =>
-                                offset + limit < total ? p + 1 : p
-                            )
-                        }
-                        disabled={offset + limit >= total}
-                        className="px-6 py-2 bg-[#d4af37] text-black rounded-lg disabled:opacity-30"
-                    >
-                        Next
-                    </button>
-                </div>
             </div>
         </section>
     );
 };
 
 export default ProductList;
+

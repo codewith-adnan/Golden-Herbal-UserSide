@@ -1,7 +1,7 @@
 import { ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import backgroundImage from '../assets/background-hero.png';
-import ProductCards from './ProductCards';
+import ProductList from './ProductList';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -88,7 +88,7 @@ const Homepage = () => {
 
             {/* --- PRODUCT COLLECTION SECTION --- */}
             <div id="products-section">
-                <ProductCards />
+                <ProductList />
             </div>
 
 

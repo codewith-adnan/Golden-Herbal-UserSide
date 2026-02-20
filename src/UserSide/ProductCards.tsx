@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useProducts } from "./UseHooks";
 
 const ProductCards = () => {
-    const { products, loading, error } = useProducts(0, 3);
+    const { products, loading, error } = useProducts(0, 10);
 
     if (loading) {
         return (

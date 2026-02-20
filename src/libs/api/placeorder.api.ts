@@ -3,6 +3,7 @@ import { postMethod } from "../../utils/http.methods";
 export interface OrderItem {
     product_id: number;
     quantity: number;
+    weight: string;
 }
 
 export interface OrderPayload {

@@ -54,7 +54,8 @@ const BuyNow = () => {
                 items: [
                     {
                         product_id: product.id,
-                        quantity: quantity
+                        quantity: quantity,
+                        weight: product.weight
                     }
                 ]
             });
@@ -97,6 +98,13 @@ const BuyNow = () => {
                             {/* Product Info Overlay (Descriptive) */}
                             <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/90 to-transparent">
                                 <h3 className="text-xl font-serif text-[#e0e0e0] mb-1">{product.name}</h3>
+                                {product.weight && (
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className="text-[10px] font-bold text-[#d4af37] uppercase tracking-widest border border-[#d4af37]/30 px-2 py-0.5 rounded-full">
+                                            {product.weight}
+                                        </span>
+                                    </div>
+                                )}
                                 <p className="text-xs text-[#888] line-clamp-2 leading-relaxed max-w-[90%]">
                                     {product.description}
                                 </p>
