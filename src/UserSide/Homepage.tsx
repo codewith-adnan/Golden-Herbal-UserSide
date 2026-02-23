@@ -27,12 +27,12 @@ const Homepage = () => {
 
     return (
         <div className="bg-[#030405] min-h-screen animate-in fade-in duration-1000 overflow-hidden text-[#d5dbe6]">
-            <section className="relative w-full aspect-[4/3] md:aspect-[1.3/1] max-h-[100vh]  border-b border-[#d4af37]/10 flex items-center justify-center">
+            <section className="relative w-full h-[calc(100vh-80px)] md:aspect-[1.3/1] md:max-h-[100vh] border-b border-[#d4af37]/10 flex items-center justify-center">
                 <div
                     className="absolute inset-0 z-0 bg-center bg-no-repeat opacity-60 transition-all duration-1000"
                     style={{
                         backgroundImage: `url(${backgroundImage})`,
-                        backgroundSize: '100%',
+                        backgroundSize: 'cover',
                         backgroundPosition: 'center'
                     }}
                 />

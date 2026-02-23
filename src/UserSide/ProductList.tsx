@@ -23,7 +23,7 @@ const ProductList = () => {
     if (!loading && products.length === 0) return null;
 
     return (
-        <section className="bg-[#030405] py-20 px-6 font-sans border-t border-[#d4af37]/5">
+        <section className="bg-[#030405] pt-6 md:pt-12 pb-8 md:pb-18 px-3 font-sans border-t border-[#d4af37]/5">
             <div className="max-w-7xl mx-auto">
 
                 {/* Section Header */}
@@ -32,7 +32,7 @@ const ProductList = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="flex flex-col items-center text-center mb-16"
+                    className="flex flex-col items-center text-center mb-8 md:mb-16"
                 >
                     <span className="text-[10px] text-[#d4af37] font-black uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
                         <Sparkles size={12} /> Premium Collection
@@ -45,63 +45,63 @@ const ProductList = () => {
                 {error && <p className="text-red-500 text-center mb-8">{error}</p>}
 
                 {/* Product Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {displayedProducts.map((product) => (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8">
+                    {displayedProducts.map((product, index) => (
                         <motion.div
                             key={product.id}
                             initial={{ opacity: 0, y: 50 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
                             transition={{ duration: 0.5 }}
-                            className="group relative bg-[#0d0f10] border border-[#1a1a1a] border-t-[2.5px] border-t-[#d4af37]/40 rounded-[32px] p-5 transition-all duration-500 hover:bg-white/[0.01] hover:border-[#d4af37]/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] hover:shadow-[0_20px_50px_-12px_rgba(212,175,55,0.08)] overflow-hidden"
+                            className={`group relative bg-[#0d0f10] border border-[#1a1a1a] border-t-[2.5px] border-t-[#d4af37]/40 rounded-2xl md:rounded-[32px] p-2.5 md:p-5 transition-all duration-500 hover:bg-white/[0.01] hover:border-[#d4af37]/30 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.7)] hover:shadow-[0_20px_50px_-12px_rgba(212,175,55,0.08)] overflow-hidden ${!viewAll && index === 2 ? 'hidden md:block' : ''}`}
                         >
                             {/* Image */}
-                            <div className="relative h-64 w-full rounded-[24px] overflow-hidden mb-6">
+                            <div className="relative h-28 md:h-64 w-full rounded-xl md:rounded-[24px] overflow-hidden mb-2.5 md:mb-6">
                                 <img
                                     src={product.image}
-                                    alt={product.name}
+                                    alt=""
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#030405]/80 via-transparent to-transparent"></div>
 
-                                {/* Weight Badge */}
-                                <div className="absolute bottom-4 left-4 bg-[#030405]/80 backdrop-blur-md border border-[#d4af37]/30 px-3 py-1.5 rounded-full flex items-center gap-2">
-                                    <Scale size={12} className="text-[#d4af37]" />
-                                    <span className="text-[10px] font-bold text-[#d5dbe6] uppercase tracking-widest">
+                                {/* Weight Badge - Even smaller on Mobile */}
+                                <div className="absolute bottom-1.5 left-1.5 md:bottom-4 md:left-4 bg-[#030405]/80 backdrop-blur-md border border-[#d4af37]/30 px-1.5 py-0.5 md:px-3 md:py-1.5 rounded-full flex items-center gap-1 md:gap-2">
+                                    <Scale size={8} className="text-[#d4af37] md:w-[12px] md:h-[12px]" />
+                                    <span className="text-[7px] md:text-[10px] font-bold text-[#d5dbe6] uppercase tracking-widest">
                                         {product.weight}
                                     </span>
                                 </div>
                             </div>
 
                             {/* Content */}
-                            <div className="px-2 space-y-4">
-                                <div className="flex justify-between items-start">
-                                    <h3 className="text-2xl font-serif font-bold text-[#d5dbe6] group-hover:text-[#d4af37] transition-colors duration-300">
+                            <div className="px-1 md:px-2 space-y-1.5 md:space-y-4">
+                                <div className="flex flex-col md:flex-row justify-between items-start gap-0.5 md:gap-1">
+                                    <h3 className="text-[10px] md:text-xl font-serif font-bold text-[#d5dbe6] group-hover:text-[#d4af37] transition-colors duration-300 line-clamp-1">
                                         {product.name}
                                     </h3>
 
                                     {product.stock_quantity > 0 ? (
-                                        <div className="flex items-center gap-1 bg-green-500/5 px-2 py-1 rounded-lg">
-                                            <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></div>
-                                            <span className="text-[9px] text-green-500/80 font-bold uppercase">
+                                        <div className="flex items-center gap-0.5 bg-green-500/5 px-1 py-0.5 rounded">
+                                            <div className="w-0.5 h-0.5 md:w-1 md:h-1 bg-green-500 rounded-full animate-pulse"></div>
+                                            <span className="text-[7px] md:text-[9px] text-green-500/80 font-bold uppercase">
                                                 In Stock
                                             </span>
                                         </div>
                                     ) : (
-                                        <span className="text-red-500 text-xs font-bold">
+                                        <span className="text-red-500 text-[8px] md:text-xs font-bold">
                                             Out of Stock
                                         </span>
                                     )}
                                 </div>
 
-                                <p className="text-[#5e686e] text-sm leading-relaxed line-clamp-2 font-medium">
+                                <p className="text-[#5e686e] text-[9px] md:text-sm leading-tight md:leading-relaxed line-clamp-2 font-medium">
                                     {product.description}
                                 </p>
 
                                 {/* Price */}
-                                <div className="flex items-end gap-1 pt-2">
-                                    <span className="text-[#d4af37] text-sm font-bold pb-1">Rs.</span>
-                                    <span className="text-3xl font-serif font-black text-white tracking-tighter">
+                                <div className="flex items-end gap-0.5 pt-0.5 md:pt-2">
+                                    <span className="text-[#d4af37] text-[9px] md:text-sm font-bold pb-0.5 md:pb-1">Rs.</span>
+                                    <span className="text-sm md:text-3xl font-serif font-black text-white tracking-tighter">
                                         {product.price}
                                     </span>
                                 </div>
@@ -110,9 +110,9 @@ const ProductList = () => {
                                 <Link
                                     to="/buy-now"
                                     state={{ product }}
-                                    className="relative w-full overflow-hidden mt-6 py-4 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black font-black text-xs uppercase tracking-[0.2em] rounded-2xl flex items-center justify-center gap-3 transition-all duration-500 hover:scale-[1.02] shadow-[0_15px_30px_-10px_rgba(212,175,55,0.4)] active:scale-95"
+                                    className="relative w-full overflow-hidden mt-2 md:mt-6 py-2 md:py-4 bg-gradient-to-r from-[#d4af37] to-[#b89530] text-black font-black text-[8px] md:text-xs uppercase tracking-[0.05em] md:tracking-[0.2em] rounded-lg md:rounded-2xl flex items-center justify-center gap-1.5 md:gap-3 transition-all duration-500 hover:scale-[1.02] shadow-[0_10px_20px_-5px_rgba(212,175,55,0.4)] active:scale-95"
                                 >
-                                    <ShoppingBag size={16} />
+                                    <ShoppingBag size={12} className="md:w-[16px] md:h-[16px]" />
                                     Buy Now
                                 </Link>
                             </div>

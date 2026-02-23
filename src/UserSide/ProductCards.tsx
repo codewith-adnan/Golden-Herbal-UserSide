@@ -53,7 +53,7 @@ const ProductCards = () => {
                             <div className="relative h-64 w-full rounded-[24px] overflow-hidden mb-6">
                                 <img
                                     src={product.image}
-                                    alt={product.name}
+                                    alt=""
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#030405]/80 via-transparent to-transparent"></div>

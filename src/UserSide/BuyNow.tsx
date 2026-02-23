@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useOrder } from './UseHooks';
 import card1 from '../assets/card1.PNG';
 import HerbalModal from '../Components/HerbalModal';
+import ProductList from './ProductList';
 
 const BuyNow = () => {
     const navigate = useNavigate();
@@ -65,7 +66,7 @@ const BuyNow = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505]  md:pt-20 pb-20 font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-hidden">
+        <div className="min-h-screen bg-[#050505] pb-20 font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-hidden">
 
             {/* Modal for Success */}
             <HerbalModal
@@ -73,6 +74,7 @@ const BuyNow = () => {
                 onClose={handleModalClose}
             />
 
+            <ProductList />
             <div className="max-w-6xl mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
@@ -83,7 +85,7 @@ const BuyNow = () => {
                             <div className="aspect-[4/5] relative overflow-hidden">
                                 <img
                                     src={product.image}
-                                    alt={product.name}
+                                    alt=""
                                     className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60" />
@@ -97,7 +99,6 @@ const BuyNow = () => {
 
                             {/* Product Info Overlay (Descriptive) */}
                             <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/90 to-transparent">
-                                <h3 className="text-xl font-serif text-[#e0e0e0] mb-1">{product.name}</h3>
                                 {product.weight && (
                                     <div className="flex items-center gap-2 mb-2">
                                         <span className="text-[10px] font-bold text-[#d4af37] uppercase tracking-widest border border-[#d4af37]/30 px-2 py-0.5 rounded-full">
