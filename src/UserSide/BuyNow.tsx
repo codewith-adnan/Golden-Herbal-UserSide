@@ -3,27 +3,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useOrder } from './UseHooks';
-import card1 from '../assets/card1.PNG';
+import { getImageUrl } from '../utils/image.utils';
 import HerbalModal from '../Components/HerbalModal';
 import ProductList from './ProductList';
 
 const BuyNow = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { product } = location.state || {
-        product: {
-            id: 1,
-            name: "Classic Gold Leaf Extract",
-            price: 7500,
-            weight: "250g",
-            description: "Our most potent formula yet, hand-picked from the high-altitude botanical gardens. This ancient herbal blend is designed to restore holistic vitality and elevate your daily wellness ritual.",
-            image: card1
-        }
-    };
+    const { product } = location.state || { product: null };
 
     const [quantity, setQuantity] = useState(1);
     const [showModal, setShowModal] = useState(false);
-    const totalPrice = product.price * quantity;
 
     const { placeOrder, loading, error, success } = useOrder();
 
@@ -32,6 +22,23 @@ const BuyNow = () => {
             setShowModal(true);
         }
     }, [success]);
+
+    if (!product) {
+        return (
+            <div className="min-h-screen bg-[#050505] font-sans">
+                <ProductList />
+                <div className="max-w-6xl mx-auto px-4 py-20 text-center">
+                    <div className="bg-[#0a0a0a] border border-white/5 rounded-3xl p-12">
+                        <ShoppingBag size={48} className="mx-auto text-[#d4af37]/20 mb-6" />
+                        <h2 className="text-2xl font-serif text-white mb-4">No Product Selected</h2>
+                        <p className="text-[#888] mb-8">Please select a masterpiece from our collection above to proceed with your order.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const totalPrice = product.price * quantity;
 
     const handleModalClose = () => {
         setShowModal(false);
@@ -84,9 +91,29 @@ const BuyNow = () => {
                             {/* Image Container - Aspect Ratio adjusted for a more 'portrait' premium look, not square */}
                             <div className="aspect-[4/5] relative overflow-hidden">
                                 <img
-                                    src={product.image}
+                                    src={getImageUrl(product.image)}
                                     alt=""
                                     className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                                    onError={(e) => {
+                                        const img = e.currentTarget;
+                                        const currentSrc = img.src;
+
+                                        // If already tried /gold/, stop to prevent infinite loops
+                                        if (currentSrc.includes('/gold/')) {
+                                            return;
+                                        }
+
+                                        const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://13.60.168.111";
+                                        // Use the same regex to get the path part
+                                        const rawUrl = product.image || '';
+                                        const pathPart = rawUrl.replace(/^https?:\/\/[^/]+/, '').replace(/^\//, '');
+
+                                        // Try adding /gold/ prefix if initial load fails
+                                        const retryUrl = `${baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}/gold/${pathPart}`;
+
+                                        console.log(`🔄 Image Retry (/gold/) for [${product.name}]:`, retryUrl);
+                                        img.src = retryUrl;
+                                    }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60" />
 

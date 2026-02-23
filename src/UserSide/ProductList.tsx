@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useProducts } from "./UseHooks";
+import { getImageUrl } from "../utils/image.utils";
 
 const ProductList = () => {
     const [viewAll, setViewAll] = useState(false);
@@ -58,9 +59,29 @@ const ProductList = () => {
                             {/* Image */}
                             <div className="relative h-28 md:h-64 w-full rounded-xl md:rounded-[24px] overflow-hidden mb-2.5 md:mb-6">
                                 <img
-                                    src={product.image}
+                                    src={getImageUrl(product.image)}
                                     alt=""
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    onError={(e) => {
+                                        const img = e.currentTarget;
+                                        const currentSrc = img.src;
+
+                                        // If already tried /gold/, stop to prevent infinite loops
+                                        if (currentSrc.includes('/gold/')) {
+                                            return;
+                                        }
+
+                                        const baseUrl = import.meta.env.VITE_API_BASE_URL || "http://13.60.168.111";
+                                        // Use the same regex to get the path part
+                                        const rawUrl = product.image || '';
+                                        const pathPart = rawUrl.replace(/^https?:\/\/[^/]+/, '').replace(/^\//, '');
+
+                                        // Try adding /gold/ prefix if initial load fails
+                                        const retryUrl = `${baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}/gold/${pathPart}`;
+
+                                        console.log(`🔄 Image Retry (/gold/) for [${product.name}]:`, retryUrl);
+                                        img.src = retryUrl;
+                                    }}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#030405]/80 via-transparent to-transparent"></div>
 
